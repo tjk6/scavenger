@@ -2,19 +2,30 @@ package databasemanager;
 
 public class Room {
     // Private Members
-    private  String roomNum;
+    private String buildingNum; // Foreign Key
+    private  String roomNum;    // Primary Key
     private String floorNum;
 
     // Constructors
     public Room() {
+
     }
 
-    public Room(String roomNum, String floorNum) {
+    public Room(String buildingNum, String roomNum, String floorNum) {
+        this.buildingNum = buildingNum;
         this.roomNum = roomNum;
         this.floorNum = floorNum;
     }
 
     // Public Methods
+    public String getBuildingNum() {
+        return buildingNum;
+    }
+
+    public void setBuildingNum(String buildingNum) {
+        this.buildingNum = buildingNum;
+    }
+
     public String getRoomNum() {
         return roomNum;
     }
