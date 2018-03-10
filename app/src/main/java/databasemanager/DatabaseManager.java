@@ -1,7 +1,10 @@
 package databasemanager;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.Arrays;
 import java.util.List;
@@ -51,6 +54,19 @@ public final class DatabaseManager {
         String floorNum = keyList.get(2);
         String roomNum = keyList.get(3);
 
-        
+        buildingsRef.orderByChild("buildingNum")
+                    .equalTo(buildingNum)
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
     }
 }
