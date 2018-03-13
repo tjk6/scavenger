@@ -17,6 +17,11 @@ public final class DatabaseManager {
     private static final DatabaseReference coursesRef = ref.child("courses");
     private static final DatabaseReference facultyRef = ref.child("faculty");
     private static final DatabaseReference roomsRef = ref.child("rooms");
+    private static final DatabaseReference classroomsRef = ref.child("classrooms");
+    private static final DatabaseReference officesRef = ref.child("offices");
+    private static final DatabaseReference elevatorsRef = ref.child("elevators");
+    private static final DatabaseReference stairwaysRef = ref.child("stairways");
+
 
     // Private constructor for non-instantiability
     private DatabaseManager() {
@@ -41,6 +46,26 @@ public final class DatabaseManager {
     public static void insertRoom(Room _room) {
         String key = roomsRef.push().getKey();
         roomsRef.child(key).setValue(_room);
+    }
+
+    public static void insertClassroom(Classroom _classroom) {
+        String key = classroomsRef.push().getKey();
+        classroomsRef.child(key).setValue(_classroom);
+    }
+
+    public static void insertOffices(Office _office) {
+        String key = officesRef.push().getKey();
+        officesRef.child(key).setValue(_office);
+    }
+
+    public static void insertElevator(Elevator _elevator) {
+        String key = elevatorsRef.push().getKey();
+        elevatorsRef.child(key).setValue(_elevator);
+    }
+
+    public static void insertStairway(Stairway _stairway) {
+        String key = stairwaysRef.push().getKey();
+        stairwaysRef.child(key).setValue(_stairway);
     }
 
     public static void getInfo(String key) {
