@@ -11,7 +11,15 @@ public class Stairway {
     private String floorNum;
 
     // Constructors
+    public Stairway() {
 
+    }
+
+    public Stairway(String buildingNum, String roomNum, String floorNum) {
+        this.buildingNum = buildingNum;
+        this.roomNum = roomNum;
+        this.floorNum = floorNum;
+    }
 
     // Public Methods
     public String getBuildingNum() {

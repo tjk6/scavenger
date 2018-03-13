@@ -11,7 +11,15 @@ public class Office {
     private String floorNum;
 
     // Constructors
+    public Office() {
 
+    }
+
+    public Office(String buildingNum, String roomNum, String floorNum) {
+        this.buildingNum = buildingNum;
+        this.roomNum = roomNum;
+        this.floorNum = floorNum;
+    }
 
     // Public Methods
     public String getBuildingNum() {

@@ -33,9 +33,25 @@ public final class DatabaseManager {
         buildingsRef.child(key).setValue(_building);
     }
 
+    public static String insertBuilding(String _name, String _buildingNum) {
+        Building newBuilding = new Building(_name, _buildingNum);
+        String key = buildingsRef.push().getKey();
+        buildingsRef.child(key).setValue(newBuilding);
+
+        return key;
+    }
+
     public static void insertCourse(Course _course) {
         String key = coursesRef.push().getKey();
         coursesRef.child(key).setValue(_course);
+    }
+
+    public static String insertCourse(String _crn, String _buildingNum, String _roomNum, String _instructor, String _name, String _startingTime, String _endingTime) {
+        Course newCourse = new Course(_crn, _buildingNum, _roomNum, _instructor, _name, _startingTime, _endingTime);
+        String key = coursesRef.push().getKey();
+        coursesRef.child(key).setValue(newCourse);
+
+        return key;
     }
 
     public static void insertFaculty(Faculty _faculty) {
@@ -43,9 +59,25 @@ public final class DatabaseManager {
         facultyRef.child(key).setValue(_faculty);
     }
 
+    public static String insertFaculty(String _firstName, String _lastName, String _emailAddress) {
+        String key = facultyRef.push().getKey();
+        Faculty newFaculty = new Faculty(key, _firstName, _lastName, _emailAddress);
+        facultyRef.child(key).setValue(newFaculty);
+
+        return key;
+    }
+
     public static void insertRoom(Room _room) {
         String key = roomsRef.push().getKey();
         roomsRef.child(key).setValue(_room);
+    }
+
+    public static String insertRoom(String _buildingNum, String _roomNum, String _floorNum) {
+        Room newRoom = new Room(_buildingNum, _roomNum, _floorNum);
+        String key = roomsRef.push().getKey();
+        roomsRef.child(key).setValue(newRoom);
+
+        return key;
     }
 
     public static void insertClassroom(Classroom _classroom) {
@@ -53,9 +85,25 @@ public final class DatabaseManager {
         classroomsRef.child(key).setValue(_classroom);
     }
 
-    public static void insertOffices(Office _office) {
+    public static String insertClassroom(String _buildingNum, String _roomNum, String _floorNum) {
+        Classroom newClasroom = new Classroom(_buildingNum, _roomNum, _floorNum);
+        String key = classroomsRef.push().getKey();
+        classroomsRef.child(key).setValue(newClasroom);
+
+        return key;
+    }
+
+    public static void insertOffice(Office _office) {
         String key = officesRef.push().getKey();
         officesRef.child(key).setValue(_office);
+    }
+
+    public static String insertOffice(String _buildingNum, String _roomNum, String _floorNum) {
+        Office newOffice = new Office(_buildingNum, _roomNum, _floorNum);
+        String key = officesRef.push().getKey();
+        officesRef.child(key).setValue(newOffice);
+
+        return key;
     }
 
     public static void insertElevator(Elevator _elevator) {
@@ -63,9 +111,25 @@ public final class DatabaseManager {
         elevatorsRef.child(key).setValue(_elevator);
     }
 
+    public static String insertElevator(String _buildingNum, String _roomNum) {
+        Elevator newElevator = new Elevator(_buildingNum, _roomNum);
+        String key = elevatorsRef.push().getKey();
+        elevatorsRef.child(key).setValue(newElevator);
+
+        return key;
+    }
+
     public static void insertStairway(Stairway _stairway) {
         String key = stairwaysRef.push().getKey();
         stairwaysRef.child(key).setValue(_stairway);
+    }
+
+    public static String insertStairway(String _buildingNum, String _roomNum, String _floorNum) {
+        Stairway newStairway = new Stairway(_buildingNum, _roomNum, _floorNum);
+        String key = stairwaysRef.push().getKey();
+        stairwaysRef.child(key).setValue(newStairway);
+
+        return key;
     }
 
     public static void getInfo(String key) {

@@ -10,7 +10,14 @@ public class Elevator {
     private  String roomNum;    // Primary Key
 
     // Constructors
+    public Elevator() {
 
+    }
+
+    public Elevator(String buildingNum, String roomNum) {
+        this.buildingNum = buildingNum;
+        this.roomNum = roomNum;
+    }
 
     // Public Methods
     public String getBuildingNum() {
