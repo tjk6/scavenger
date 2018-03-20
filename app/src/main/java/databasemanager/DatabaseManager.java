@@ -1,16 +1,25 @@
 package databasemanager;
 
+import android.util.Log;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public final class DatabaseManager {
     // Private Members
+    // Refs
     private static final FirebaseDatabase database = FirebaseDatabase.getInstance();
     private static final DatabaseReference ref = database.getReference();
     private static final DatabaseReference buildingsRef = ref.child("buildings");
@@ -22,6 +31,14 @@ public final class DatabaseManager {
     private static final DatabaseReference elevatorsRef = ref.child("elevators");
     private static final DatabaseReference stairwaysRef = ref.child("stairways");
 
+    // Class Types
+    private static final String Classroom_Type = "01";
+    private static final String Office_Type = "02";
+    private static final String Stairway_Type = "04";
+    private static final String Elevator_Type = "05";
+
+    // JSON Object
+    private static JSONObject jsonData = new JSONObject();
 
     // Private constructor for non-instantiability
     private DatabaseManager() {
@@ -46,8 +63,8 @@ public final class DatabaseManager {
         coursesRef.child(key).setValue(_course);
     }
 
-    public static String insertCourse(String _crn, String _buildingNum, String _roomNum, String _instructor, String _name, String _startingTime, String _endingTime) {
-        Course newCourse = new Course(_crn, _buildingNum, _roomNum, _instructor, _name, _startingTime, _endingTime);
+    public static String insertCourse(String _crn, String _buildingNum, String _roomNum, String _instructor, String _subject, String _courseNum, String _name, String _startingTime, String _endingTime) {
+        Course newCourse = new Course(_crn, _buildingNum, _roomNum, _instructor, _subject, _courseNum, _name, _startingTime, _endingTime);
         String key = coursesRef.push().getKey();
         coursesRef.child(key).setValue(newCourse);
 
@@ -98,8 +115,8 @@ public final class DatabaseManager {
         officesRef.child(key).setValue(_office);
     }
 
-    public static String insertOffice(String _buildingNum, String _roomNum, String _floorNum) {
-        Office newOffice = new Office(_buildingNum, _roomNum, _floorNum);
+    public static String insertOffice(String _buildingNum, String _roomNum, String _floorNum, String _instructor, HashMap<String, String> _hours) {
+        Office newOffice = new Office(_buildingNum, _roomNum, _floorNum, _instructor, _hours);
         String key = officesRef.push().getKey();
         officesRef.child(key).setValue(newOffice);
 
@@ -132,30 +149,97 @@ public final class DatabaseManager {
         return key;
     }
 
-    public static void getInfo(String key) {
+    private static JSONObject merge(JSONObject... jsonObjects) throws JSONException {
+
+        JSONObject jsonObject = new JSONObject();
+
+        for(JSONObject temp : jsonObjects){
+            Iterator<String> keys = temp.keys();
+            while(keys.hasNext()){
+                String key = keys.next();
+                jsonObject.put(key, temp.get(key));
+            }
+
+        }
+        return jsonObject;
+    }
+
+    private static JSONObject appendData(JSONObject jsonObject) {
+        try {
+           return merge(jsonData, jsonObject);
+        }
+        catch ( JSONException e ) {
+            e.printStackTrace();
+        }
+        return new JSONObject();
+    }
+
+    public static void waitForResponse() {
+        try
+        {
+            Thread.sleep(1000);
+        }
+        catch(InterruptedException ex)
+        {
+            Thread.currentThread().interrupt();
+        }
+    }
+
+    public static JSONObject getInfo(String key) {
         // Example key: 01:00004:003:00305
         List<String> keyList = Arrays.asList(key.split(":"));
-        if(keyList.size() != 4)
+        if(keyList.size() < 4)
             throw new IllegalArgumentException("The passed in key is formatted incorrectly.");
 
         String type = keyList.get(0);
-        String buildingNum = keyList.get(1);
+        final String buildingNum = keyList.get(1);
         String floorNum = keyList.get(2);
         String roomNum = keyList.get(3);
 
-        buildingsRef.orderByChild("buildingNum")
-                    .equalTo(buildingNum)
-                    .addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
+        while(jsonData.length()>0)
+            jsonData.remove(jsonData.keys().next());
 
-            }
+        if(type.equals(Classroom_Type))
+        {
+            // Get the building.
+            buildingsRef.orderByChild("buildingNum")
+            .equalTo(buildingNum)
+            .addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    Building buildingData = dataSnapshot.getValue(Building.class);
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
+                    JSONObject buildingJSON = new JSONObject((Map)dataSnapshot.getValue());
+                    jsonData = appendData(buildingJSON);
+                }
 
-            }
-        });
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    String error = databaseError.getMessage();
+                    Log.v("Database", error);
+                }
+            });
 
+            // Get the classroom
+            classroomsRef.orderByChild("roomNum")
+            .equalTo(roomNum)
+            .addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    Classroom classroomData = dataSnapshot.getValue(Classroom.class);
+
+                    JSONObject classroomJSON = new JSONObject((Map)dataSnapshot.getValue());
+                    jsonData = appendData(classroomJSON);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                    String error = databaseError.getMessage();
+                    Log.v("Database", error);
+                }
+            });
+        }
+
+        return jsonData;
     }
 }

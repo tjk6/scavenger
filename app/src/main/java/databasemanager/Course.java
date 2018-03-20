@@ -6,6 +6,8 @@ public class Course {
     private String buildingNum; // Foreign Key
     private String roomNum;     // Foreign Key
     private String instructor;  // Foreign Key
+    private String subject;
+    private String courseNum;
     private String name;
     private String startingTime;
     private String endingTime;
@@ -15,11 +17,13 @@ public class Course {
 
     }
 
-    public Course(String crn, String buildingNum, String roomNum, String instructor, String name, String startingTime, String endingTime) {
+    public Course(String crn, String buildingNum, String roomNum, String instructor, String subject, String courseNum, String name, String startingTime, String endingTime) {
         this.crn = crn;
         this.buildingNum = buildingNum;
         this.roomNum = roomNum;
         this.instructor = instructor;
+        this.subject = subject;
+        this.courseNum = courseNum;
         this.name = name;
         this.startingTime = startingTime;
         this.endingTime = endingTime;
@@ -56,6 +60,22 @@ public class Course {
 
     public void setInstructor(String instructor) {
         this.instructor = instructor;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
+    public String getCourseNum() {
+        return courseNum;
+    }
+
+    public void setCourseNum(String courseNum) {
+        this.courseNum = courseNum;
     }
 
     public String getName() {
