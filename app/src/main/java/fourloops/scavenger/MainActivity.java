@@ -2,6 +2,7 @@ package fourloops.scavenger;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.TextView;
 
 import org.json.JSONObject;
 
@@ -25,8 +26,10 @@ public class MainActivity extends AppCompatActivity {
 //        String officeKey = DatabaseManager.insertOffice("00004", "00245", "2", facultyKey, officeHours);
 //        String classroomKey = DatabaseManager.insertClassroom("00004", "00305", "003");
 
+        TextView helloWorld_TextView = findViewById(R.id.HelloWorld);
+
         
-        JSONObject json = DatabaseManager.getInfo("01:00004:003:00305:TEST_CLASS");
+        JSONObject json = DatabaseManager.getInfo("01:00004:003:00305:TEST_CLASS", helloWorld_TextView);
 
 //        try
 //        {

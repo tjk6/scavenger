@@ -1,6 +1,7 @@
 package databasemanager;
 
 import android.util.Log;
+import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -185,7 +186,7 @@ public final class DatabaseManager {
         }
     }
 
-    public static JSONObject getInfo(String key) {
+    public static JSONObject getInfo(String key, final TextView textView) {
         // Example key: 01:00004:003:00305
         List<String> keyList = Arrays.asList(key.split(":"));
         if(keyList.size() < 4)
@@ -207,10 +208,16 @@ public final class DatabaseManager {
             .addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    Building buildingData = dataSnapshot.getValue(Building.class);
 
-                    JSONObject buildingJSON = new JSONObject((Map)dataSnapshot.getValue());
-                    jsonData = appendData(buildingJSON);
+                    for(DataSnapshot ds : dataSnapshot.getChildren())
+                    {
+                        Building buildingData = ds.getValue(Building.class);
+
+                        textView.setText(buildingData.getName());
+
+                        JSONObject buildingJSON = new JSONObject((Map)ds.getValue());
+                        jsonData = appendData(buildingJSON);
+                    }
                 }
 
                 @Override
@@ -226,10 +233,14 @@ public final class DatabaseManager {
             .addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    Classroom classroomData = dataSnapshot.getValue(Classroom.class);
 
-                    JSONObject classroomJSON = new JSONObject((Map)dataSnapshot.getValue());
-                    jsonData = appendData(classroomJSON);
+                    for(DataSnapshot ds : dataSnapshot.getChildren())
+                    {
+                        Classroom classroomData = ds.getValue(Classroom.class);
+
+                        JSONObject classroomJSON = new JSONObject((Map)ds.getValue());
+                        jsonData = appendData(classroomJSON);
+                    }
                 }
 
                 @Override
