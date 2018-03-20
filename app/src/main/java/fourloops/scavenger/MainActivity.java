@@ -8,6 +8,8 @@ import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity {
     private Button qrLaunchButton;
+    private Button qrCreatorButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -21,10 +23,25 @@ public class MainActivity extends AppCompatActivity {
                 launchQRScanner();
             }
         });
+
+        qrCreatorButton = findViewById(R.id.create_new_qr);
+
+        qrCreatorButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view){
+                launchQRCreator();
+            }
+        });
+
     }
 
     private void launchQRScanner(){
         Intent intent = new Intent(this, QRScannerActivity.class);
+        startActivity(intent);
+    }
+
+    private void launchQRCreator(){
+        Intent intent = new Intent(this, ContentListActivity.class);
         startActivity(intent);
     }
 }

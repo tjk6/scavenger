@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Scavenger</string>
+    <string name="item1Title">Title1</string>
+    <string name="item1Data">Data1</string>
 </resources>

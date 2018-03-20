@@ -17,6 +17,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".QRScannerActivity"></activity>
+        <activity android:name=".ContentListActivity"></activity>
 
     </application>
     <uses-permission android:name="android.permission.CAMERA"/>
