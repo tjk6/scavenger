@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
         qrCreatorButton.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                launchQRCreator();
+//                launchQRCreator();
             }
         });
 

@@ -188,7 +188,7 @@ public final class DatabaseManager {
             // Get the building info
             buildingsRef.orderByChild("buildingNum")
             .equalTo(buildingNum)
-            .addListenerForSingleValueEvent(new ValueEventListener() {
+            .addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -196,10 +196,25 @@ public final class DatabaseManager {
                     {
                         Building buildingData = ds.getValue(Building.class);
 
+                        // Check if already in the list
+                        boolean exists = false;
+                        for(ListItem item : itemList)
+                        {
+                            if(item.getItemTitle().equals("Building Name"))
+                            {
+                                item.setItemBody(buildingData.getName());
+                                exists = true;
+                                adapter.notifyDataSetChanged();
+                            }
+                        }
+
                         // Add to view
-                        ListItem building_ListItem = new ListItem("Building Name", buildingData.getName());
-                        itemList.add(building_ListItem);
-                        adapter.notifyDataSetChanged();
+                        if(!exists)
+                        {
+                            ListItem building_ListItem = new ListItem("Building Name", buildingData.getName());
+                            itemList.add(building_ListItem);
+                            adapter.notifyDataSetChanged();
+                        }
                     }
                 }
 
@@ -213,7 +228,7 @@ public final class DatabaseManager {
             // Get the classroom
             classroomsRef.orderByChild("roomNum")
             .equalTo(roomNum)
-            .addListenerForSingleValueEvent(new ValueEventListener() {
+            .addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
 
@@ -221,10 +236,25 @@ public final class DatabaseManager {
                     {
                         Classroom classroomData = ds.getValue(Classroom.class);
 
+                        // Check if already in the list
+                        boolean exists = false;
+                        for(ListItem item : itemList)
+                        {
+                            if(item.getItemTitle().equals("Room Number"))
+                            {
+                                item.setItemBody(classroomData.getRoomNum());
+                                exists = true;
+                                adapter.notifyDataSetChanged();
+                            }
+                        }
+
                         // Add to the view
-                        ListItem class_ListItem = new ListItem("Room Number", classroomData.getRoomNum());
-                        itemList.add(class_ListItem);
-                        adapter.notifyDataSetChanged();
+                        if(!exists)
+                        {
+                            ListItem class_ListItem = new ListItem("Room Number", classroomData.getRoomNum());
+                            itemList.add(class_ListItem);
+                            adapter.notifyDataSetChanged();
+                        }
                     }
                 }
 
@@ -238,7 +268,7 @@ public final class DatabaseManager {
             // Get the course info
             coursesRef.orderByChild("roomNum")
                     .equalTo(roomNum)
-                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                    .addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             ArrayList<String> courseList = new ArrayList<String>();
@@ -251,19 +281,18 @@ public final class DatabaseManager {
                                 Course courseData = ds.getValue(Course.class);
 
                                 // Append the course to the course list
-                                String course = courseData.getSubject() + courseData.getCourseNum() + ": " + courseData.getName() + "\n";
+                                String course = courseData.getSubject() + courseData.getCourseNum() + ": " + courseData.getName() + "\n\tStart Time: " + courseData.getStartingTime() + "\n\tEnd Time: " + courseData.getEndingTime() + "\n\n";
                                 courseList.add(course);
 
                                 // Append the instructor to the instructor list
                                 facultyKeys.add(courseData.getInstructor());
-
                             }
 
                             for (int i = 0; i < facultyKeys.size(); i++) {
                                 final int localI = i;
                                 facultyRef.orderByChild("id")
                                         .equalTo(facultyKeys.get(i))
-                                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                                        .addValueEventListener(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(DataSnapshot dataSnapshot) {
                                             for(DataSnapshot ds : dataSnapshot.getChildren())
@@ -285,16 +314,44 @@ public final class DatabaseManager {
                                                 {
                                                     // Add instructors
                                                     String instructors = TextUtils.join("\n", instructorList);
-                                                    ListItem instructor_ListItem = new ListItem("Instructors", instructors);
-                                                    itemList.add(instructor_ListItem);
+                                                    // Check if already in the list
+                                                    boolean instructorExists = false;
+                                                    for(ListItem item : itemList)
+                                                    {
+                                                        if(item.getItemTitle().equals("Instructors"))
+                                                        {
+                                                            item.setItemBody(instructors);
+                                                            instructorExists = true;
+                                                            adapter.notifyDataSetChanged();
+                                                        }
+                                                    }
+                                                    if(!instructorExists)
+                                                    {
+                                                        ListItem instructor_ListItem = new ListItem("Instructors", instructors);
+                                                        itemList.add(instructor_ListItem);
+                                                        adapter.notifyDataSetChanged();
+                                                    }
 
                                                     // Add emails
                                                     String emails = TextUtils.join("\n", emailList);
-                                                    ListItem email_ListItem = new ListItem("Instructor Emails", emails);
-                                                    itemList.add(email_ListItem);
+                                                    // Check if already in the list
+                                                    boolean emailExists = false;
+                                                    for(ListItem item : itemList)
+                                                    {
+                                                        if(item.getItemTitle().equals("Instructor Emails"))
+                                                        {
+                                                            item.setItemBody(emails);
+                                                            emailExists = true;
+                                                            adapter.notifyDataSetChanged();
+                                                        }
+                                                    }
 
-                                                    // Refresh
-                                                    adapter.notifyDataSetChanged();
+                                                    if(!emailExists)
+                                                    {
+                                                        ListItem email_ListItem = new ListItem("Instructor Emails", emails);
+                                                        itemList.add(email_ListItem);
+                                                        adapter.notifyDataSetChanged();
+                                                    }
                                                 }
                                             }
                                         }
@@ -307,15 +364,26 @@ public final class DatabaseManager {
                                     });
                             }
 
-
-
                             // Add courses
                             String courses = TextUtils.join(" ", courseList);
-                            ListItem courses_ListItem = new ListItem("Courses", courses);
-                            itemList.add(courses_ListItem);
+                            // Check if already in the list
+                            boolean exists = false;
+                            for(ListItem item : itemList)
+                            {
+                                if(item.getItemTitle().equals("Courses"))
+                                {
+                                    item.setItemBody(courses);
+                                    exists = true;
+                                    adapter.notifyDataSetChanged();
+                                }
+                            }
 
-                            // Refresh
-                            adapter.notifyDataSetChanged();
+                            if(!exists)
+                            {
+                                ListItem courses_ListItem = new ListItem("Courses", courses);
+                                itemList.add(courses_ListItem);
+                                adapter.notifyDataSetChanged();
+                            }
                         }
 
                         @Override
