@@ -290,7 +290,7 @@ public final class DatabaseManager {
 
                                                     // Add emails
                                                     String emails = TextUtils.join("\n", emailList);
-                                                    ListItem email_ListItem = new ListItem("Emails", emails);
+                                                    ListItem email_ListItem = new ListItem("Instructor Emails", emails);
                                                     itemList.add(email_ListItem);
 
                                                     // Refresh
