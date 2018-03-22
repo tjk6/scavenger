@@ -1,6 +1,9 @@
 package databasemanager;
 
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.widget.Adapter;
+import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -12,11 +15,14 @@ import com.google.firebase.database.ValueEventListener;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import fourloops.scavenger.ListItem;
 
 public final class DatabaseManager {
     // Private Members
@@ -186,7 +192,7 @@ public final class DatabaseManager {
         }
     }
 
-    public static JSONObject getInfo(String key, final TextView textView) {
+    public static JSONObject getInfo(String key, final ArrayList<ListItem> itemList, final RecyclerView.Adapter adapter) {
         // Example key: 01:00004:003:00305
         List<String> keyList = Arrays.asList(key.split(":"));
         if(keyList.size() < 4)
@@ -213,7 +219,11 @@ public final class DatabaseManager {
                     {
                         Building buildingData = ds.getValue(Building.class);
 
-                        textView.setText(buildingData.getName());
+                        ListItem building_ListItem = new ListItem("Building Name", buildingData.getName());
+
+                        itemList.add(building_ListItem);
+
+                        adapter.notifyDataSetChanged();
 
                         JSONObject buildingJSON = new JSONObject((Map)ds.getValue());
                         jsonData = appendData(buildingJSON);
@@ -237,6 +247,12 @@ public final class DatabaseManager {
                     for(DataSnapshot ds : dataSnapshot.getChildren())
                     {
                         Classroom classroomData = ds.getValue(Classroom.class);
+
+                        ListItem class_ListItem = new ListItem("Building Name", classroomData.getRoomNum());
+
+                        itemList.add(class_ListItem);
+
+                        adapter.notifyDataSetChanged();
 
                         JSONObject classroomJSON = new JSONObject((Map)ds.getValue());
                         jsonData = appendData(classroomJSON);

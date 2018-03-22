@@ -6,14 +6,94 @@
     android:layout_height="match_parent"
     tools:context="fourloops.scavenger.MainActivity">
 
-    <TextView
-        android:id="@+id/HelloWorld"
+    <ImageView
+        android:id="@+id/demo_map_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:contentDescription="map for demonstration"
+        android:src="@drawable/demo_map_no_mark"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.gms.maps.MapView
+        android:id="@+id/mapView"
+        android:layout_width="386dp"
+        android:layout_height="514dp"
+        android:elevation="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/demo_map_view"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.666" />
+
+
+
+    <!--<Button
+        android:id="@+id/obj_qr_scanner"
+        android:layout_width="84dp"
+        android:layout_height="84dp"
+        android:layout_marginBottom="32dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginStart="4dp"
+        android:text="QR"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/create_new_qr"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_marginBottom="84dp"
+        android:layout_marginEnd="28dp"
+        android:text="TEST"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />-->
+    <ImageButton
+        android:id="@+id/create_new_qr"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
+        android:layout_marginBottom="72dp"
+        android:layout_marginEnd="16dp"
+        android:background="#0000"
+        android:contentDescription="Create new QR code"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ic_new_qr_button" />
+
+    <ImageButton
+        android:id="@+id/obj_qr_scanner"
+        android:contentDescription="Scan QR code"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        android:layout_marginBottom="16dp"
+        android:background="#0000"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/ic_camera_button" />
+
+    <ImageButton
+        android:id="@+id/bldg_info"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:background="#0000"
+        android:contentDescription="Example of a pin"
+        app:layout_constraintBottom_toBottomOf="@+id/demo_map_view"
+        app:layout_constraintEnd_toEndOf="@+id/demo_map_view"
+        app:layout_constraintHorizontal_bias="0.556"
+        app:layout_constraintStart_toStartOf="@+id/demo_map_view"
+        app:layout_constraintTop_toTopOf="@+id/demo_map_view"
+        app:layout_constraintVertical_bias="0.574"
+        app:srcCompat="@drawable/ic_pin1" />
+
 
 </android.support.constraint.ConstraintLayout>
