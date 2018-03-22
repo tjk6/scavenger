@@ -2,6 +2,7 @@ package fourloops.scavenger;
 
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import com.google.zxing.Result;
@@ -32,20 +33,12 @@ public class QRScannerActivity extends Activity implements ZXingScannerView.Resu
 
     @Override
     public void handleResult(Result rawResult) {
-        mScannerView.stopCamera();
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
-        builder.setTitle("Scan Result");
-        builder.setMessage(rawResult.getText());
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                mScannerView.resumeCameraPreview(QRScannerActivity.this);
-            }
-        });
-
-        AlertDialog alert1 = builder.create();
-        alert1.show();
+        String key = rawResult.getText();
+        Intent intent = new Intent(QRScannerActivity.this, ContentListActivity.class);
+        intent.putExtra("key", key);
+        startActivity(intent);
     }
 }
 

@@ -23,23 +23,21 @@ public class ContentListActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_content_list);
 
+        // Get the key from the scanner
+        Bundle bundle = getIntent().getExtras();
+        String key = bundle.getString("key");
 
-        //TODO: You may be able to add a new item to the list each time you update this.
+        // Attach the Firebase queries
         ArrayList<ListItem> itemList = new ArrayList<>();
         recyclerAdapter = new DataListAdapter(itemList);
-        DatabaseManager.getInfo("01:00004:003:00305", itemList, recyclerAdapter);
+        DatabaseManager.getInfo(key, itemList, recyclerAdapter);
 
-//        itemList.add(new ListItem("Building", "4")); //Change these to be variable;
-//        itemList.add(new ListItem("Floor", "3")); //Change these to be variable;
-//        itemList.add(new ListItem("Room", "304")); //Change these to be variable;
-//        itemList.add(new ListItem("Description","STORAGE_ROOM"));
-
+        // Attach the views
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(false);
         layoutManager = new LinearLayoutManager(this);
 
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(recyclerAdapter);
-
     }
 }
