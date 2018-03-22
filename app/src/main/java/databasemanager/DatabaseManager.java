@@ -251,7 +251,7 @@ public final class DatabaseManager {
                                 Course courseData = ds.getValue(Course.class);
 
                                 // Append the course to the course list
-                                String course = courseData.getSubject() + courseData.getCourseNum();
+                                String course = courseData.getSubject() + courseData.getCourseNum() + ": " + courseData.getName() + "\n";
                                 courseList.add(course);
 
                                 // Append the instructor to the instructor list
