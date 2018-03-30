@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void launchQRCreator(){
         Log.d("Launcher", "Button was pressed\n");
-        Intent intent = new Intent(this, ContentListActivity.class);
+        Intent intent = new Intent(this, CreateQRActivity.class);
         startActivity(intent);
     }
 
@@ -68,7 +68,6 @@ public class MainActivity extends AppCompatActivity {
                     bounds = new Rect(view.getLeft(), view.getTop(), view.getRight(),view.getBottom());
                     break;
                 case MotionEvent.ACTION_MOVE:
-                    Log.d("Button","Should cancel action");
                     if(!bounds.contains(view.getLeft() + (int) event.getX(),view.getTop() + (int) event.getY())){
                         qrLaunchButton.setImageResource(R.drawable.ic_camera_button);
                         canPress = false;
@@ -104,7 +103,6 @@ public class MainActivity extends AppCompatActivity {
                     bounds = new Rect(view.getLeft(), view.getTop(), view.getRight(),view.getBottom());
                     break;
                 case MotionEvent.ACTION_MOVE:
-                    Log.d("Button","Should cancel action");
                     if(!bounds.contains(view.getLeft() + (int) event.getX(),view.getTop() + (int) event.getY())){
                         qrCreatorButton.setImageResource(R.drawable.ic_new_qr_button);
                         canPress = false;
@@ -117,8 +115,8 @@ public class MainActivity extends AppCompatActivity {
                 case MotionEvent.ACTION_UP:
                     if(canPress){
                         qrCreatorButton.setImageResource(R.drawable.ic_new_qr_button);
-//                        view.performClick();
-//                        launchQRScanner();
+                        view.performClick();
+                        launchQRCreator();
                     }
                     else {
                         canPress = true;

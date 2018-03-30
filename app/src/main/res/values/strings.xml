@@ -3,4 +3,17 @@
     <string name="item1Title">Title1</string>
     <string name="item1Data">Data1</string>
     <string name="title_activity_bldg_map">BldgMapActivity</string>
+    <string name="title_activity_create_qr">CreateQRActivity</string>
+
+    <string name="landmark_title">Landmark Type:</string>
+    <string name="bldg_title">Building Number:</string>
+    <string name="flr_title">Floor Number:</string>
+    <string name="rm_title">Room Number:</string>
+    <string name="descr_title">Short Description:</string>
+    <string name="descr_text">16 Characters or Less</string>
+    <string name="create_qr_label">Create</string>
+
+
+
+
 </resources>
