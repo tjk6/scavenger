@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "447829460978",
+    "firebase_url": "https://capstone-forloops-scavenger.firebaseio.com",
+    "project_id": "capstone-forloops-scavenger",
+    "storage_bucket": "capstone-forloops-scavenger.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:447829460978:android:052e79f94bd24ac1",
+        "android_client_info": {
+          "package_name": "fourloops.scavenger"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "447829460978-iqj77ffg0cv55v55lggduhj9hmje96d8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAMsfkMd3Spgh5xR2Tci69K7BE1h6NegzI"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

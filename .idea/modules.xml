@@ -3,9 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://D:\UWF Spring 2018\Capstone\scavenger\app\app.iml" filepath="D:\UWF Spring 2018\Capstone\scavenger\app\app.iml" />
       <module fileurl="file://$PROJECT_DIR$/scavenger.iml" filepath="$PROJECT_DIR$/scavenger.iml" />
-      <module fileurl="file://D:\UWF Spring 2018\Capstone\scavenger\scavenger.iml" filepath="D:\UWF Spring 2018\Capstone\scavenger\scavenger.iml" />
     </modules>
   </component>
 </project>
