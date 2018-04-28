@@ -155,21 +155,6 @@ public final class DatabaseManager {
         return key;
     }
 
-    private static JSONObject merge(JSONObject... jsonObjects) throws JSONException {
-
-        JSONObject jsonObject = new JSONObject();
-
-        for(JSONObject temp : jsonObjects){
-            Iterator<String> keys = temp.keys();
-            while(keys.hasNext()){
-                String key = keys.next();
-                jsonObject.put(key, temp.get(key));
-            }
-
-        }
-        return jsonObject;
-    }
-
     public static void getInfo(String key, final ArrayList<ListItem> itemList, final RecyclerView.Adapter adapter) {
         // Example key: 01:00004:003:00305
         List<String> keyList = Arrays.asList(key.split(":"));
@@ -200,6 +185,7 @@ public final class DatabaseManager {
                         boolean exists = false;
                         for(ListItem item : itemList)
                         {
+                            // If the building name already exists update it's value.
                             if(item.getItemTitle().equals("Building Name"))
                             {
                                 item.setItemBody(buildingData.getName());
@@ -208,7 +194,7 @@ public final class DatabaseManager {
                             }
                         }
 
-                        // Add to view
+                        // If the building name does not exist add it to the view.
                         if(!exists)
                         {
                             ListItem building_ListItem = new ListItem("Building Name", buildingData.getName());
@@ -240,6 +226,7 @@ public final class DatabaseManager {
                         boolean exists = false;
                         for(ListItem item : itemList)
                         {
+                            // If the room number already exists update it's value.
                             if(item.getItemTitle().equals("Room Number"))
                             {
                                 item.setItemBody(classroomData.getRoomNum());
@@ -248,7 +235,7 @@ public final class DatabaseManager {
                             }
                         }
 
-                        // Add to the view
+                        // If the room number is not in the list add it to the view
                         if(!exists)
                         {
                             ListItem class_ListItem = new ListItem("Room Number", classroomData.getRoomNum());
@@ -276,6 +263,7 @@ public final class DatabaseManager {
                             final ArrayList<String> emailList = new ArrayList<String>();
                             final ArrayList<String> facultyKeys = new ArrayList<String>();
 
+                            // Get the keys for all teachers who teach in this classroom.
                             for(DataSnapshot ds : dataSnapshot.getChildren())
                             {
                                 Course courseData = ds.getValue(Course.class);
@@ -288,6 +276,8 @@ public final class DatabaseManager {
                                 facultyKeys.add(courseData.getInstructor());
                             }
 
+
+                            // Loop through the teachers
                             for (int i = 0; i < facultyKeys.size(); i++) {
                                 final int localI = i;
                                 facultyRef.orderByChild("id")
@@ -310,6 +300,7 @@ public final class DatabaseManager {
                                                 // Add email
                                                 emailList.add(faculty.getEmailAddress());
 
+                                                // Ensure we have all the emails. TODO: Possible bug here involving real-time data retrieval
                                                 if(emailList.size() == facultyKeys.size())
                                                 {
                                                     // Add instructors
@@ -318,6 +309,7 @@ public final class DatabaseManager {
                                                     boolean instructorExists = false;
                                                     for(ListItem item : itemList)
                                                     {
+                                                        // If the instructor is already in the list just update it's value.
                                                         if(item.getItemTitle().equals("Instructors"))
                                                         {
                                                             item.setItemBody(instructors);
@@ -325,6 +317,7 @@ public final class DatabaseManager {
                                                             adapter.notifyDataSetChanged();
                                                         }
                                                     }
+                                                    // If this is a new instructor add it to the view.
                                                     if(!instructorExists)
                                                     {
                                                         ListItem instructor_ListItem = new ListItem("Instructors", instructors);
@@ -338,6 +331,7 @@ public final class DatabaseManager {
                                                     boolean emailExists = false;
                                                     for(ListItem item : itemList)
                                                     {
+                                                        // If the email is already in the list update it's value.
                                                         if(item.getItemTitle().equals("Instructor Emails"))
                                                         {
                                                             item.setItemBody(emails);
@@ -345,7 +339,7 @@ public final class DatabaseManager {
                                                             adapter.notifyDataSetChanged();
                                                         }
                                                     }
-
+                                                    // If this is a new email add it to the view.
                                                     if(!emailExists)
                                                     {
                                                         ListItem email_ListItem = new ListItem("Instructor Emails", emails);
@@ -370,6 +364,7 @@ public final class DatabaseManager {
                             boolean exists = false;
                             for(ListItem item : itemList)
                             {
+                                // If the course is already in the view just update it.
                                 if(item.getItemTitle().equals("Courses"))
                                 {
                                     item.setItemBody(courses);
@@ -377,7 +372,7 @@ public final class DatabaseManager {
                                     adapter.notifyDataSetChanged();
                                 }
                             }
-
+                            // If this is a new course add it to the view.
                             if(!exists)
                             {
                                 ListItem courses_ListItem = new ListItem("Courses", courses);
