@@ -3,9 +3,6 @@ package databasemanager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
-import android.widget.Adapter;
-import android.widget.BaseAdapter;
-import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -13,16 +10,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import fourloops.scavenger.ListItem;
 
@@ -34,7 +25,7 @@ public final class DatabaseManager {
     private static final DatabaseReference buildingsRef = ref.child("buildings");
     private static final DatabaseReference coursesRef = ref.child("courses");
     private static final DatabaseReference facultyRef = ref.child("faculty");
-    private static final DatabaseReference roomsRef = ref.child("rooms");
+    private static final DatabaseReference roomRef = ref.child("room");
     private static final DatabaseReference classroomsRef = ref.child("classrooms");
     private static final DatabaseReference officesRef = ref.child("offices");
     private static final DatabaseReference elevatorsRef = ref.child("elevators");
@@ -91,14 +82,14 @@ public final class DatabaseManager {
     }
 
     public static void insertRoom(Room _room) {
-        String key = roomsRef.push().getKey();
-        roomsRef.child(key).setValue(_room);
+        String key = roomRef.push().getKey();
+        roomRef.child(key).setValue(_room);
     }
 
-    public static String insertRoom(String _buildingNum, String _roomNum, String _floorNum) {
-        Room newRoom = new Room(_buildingNum, _roomNum, _floorNum);
-        String key = roomsRef.push().getKey();
-        roomsRef.child(key).setValue(newRoom);
+    public static String insertRoom(String _buildingNum, String _roomNum, String _floorNum, String _roomType, String _description, String _facultyID) {
+        Room newRoom = new Room(_buildingNum, _roomNum, _floorNum, _roomType, _description, _facultyID);
+        String key = roomRef.push().getKey();
+        roomRef.child(key).setValue(newRoom);
 
         return key;
     }
@@ -167,90 +158,81 @@ public final class DatabaseManager {
         String floorNum = keyList.get(2);
         String roomNum = keyList.get(3);
 
-        // Classroom Type
-        if(type.equals(Classroom_Type))
-        {
+        // Classroom
+        if(type.equals(Classroom_Type)) {
             // Get the building info
             buildingsRef.orderByChild("buildingNum")
-            .equalTo(buildingNum)
-            .addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
+                    .equalTo(buildingNum)
+                    .addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
 
-                    for(DataSnapshot ds : dataSnapshot.getChildren())
-                    {
-                        Building buildingData = ds.getValue(Building.class);
+                            for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                                Building buildingData = ds.getValue(Building.class);
 
-                        // Check if already in the list
-                        boolean exists = false;
-                        for(ListItem item : itemList)
-                        {
-                            // If the building name already exists update it's value.
-                            if(item.getItemTitle().equals("Building Name"))
-                            {
-                                item.setItemBody(buildingData.getName());
-                                exists = true;
-                                adapter.notifyDataSetChanged();
+                                // Check if already in the list
+                                boolean exists = false;
+                                for (ListItem item : itemList) {
+                                    // If the building name already exists update it's value.
+                                    if (item.getItemTitle().equals("Building Name")) {
+                                        item.setItemBody(buildingData.getName());
+                                        exists = true;
+                                        adapter.notifyDataSetChanged();
+                                    }
+                                }
+
+                                // If the building name does not exist add it to the view.
+                                if (!exists) {
+                                    ListItem building_ListItem = new ListItem("Building Name", buildingData.getName());
+                                    itemList.add(building_ListItem);
+                                    adapter.notifyDataSetChanged();
+                                }
                             }
                         }
 
-                        // If the building name does not exist add it to the view.
-                        if(!exists)
-                        {
-                            ListItem building_ListItem = new ListItem("Building Name", buildingData.getName());
-                            itemList.add(building_ListItem);
-                            adapter.notifyDataSetChanged();
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            String error = databaseError.getMessage();
+                            Log.v("Database", error);
                         }
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    String error = databaseError.getMessage();
-                    Log.v("Database", error);
-                }
-            });
+                    });
 
             // Get the classroom
-            classroomsRef.orderByChild("roomNum")
-            .equalTo(roomNum)
-            .addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
+            roomRef.orderByChild("roomNum")
+                    .equalTo(roomNum)
+                    .addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
 
-                    for(DataSnapshot ds : dataSnapshot.getChildren())
-                    {
-                        Classroom classroomData = ds.getValue(Classroom.class);
+                            for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                                Room classroomData = ds.getValue(Room.class);
 
-                        // Check if already in the list
-                        boolean exists = false;
-                        for(ListItem item : itemList)
-                        {
-                            // If the room number already exists update it's value.
-                            if(item.getItemTitle().equals("Room Number"))
-                            {
-                                item.setItemBody(classroomData.getRoomNum());
-                                exists = true;
-                                adapter.notifyDataSetChanged();
+                                // Check if already in the list
+                                boolean exists = false;
+                                for (ListItem item : itemList) {
+                                    // If the room number already exists update it's value.
+                                    if (item.getItemTitle().equals("Room Number")) {
+                                        item.setItemBody(classroomData.getRoomNum());
+                                        exists = true;
+                                        adapter.notifyDataSetChanged();
+                                    }
+                                }
+
+                                // If the room number is not in the list add it to the view
+                                if (!exists) {
+                                    ListItem class_ListItem = new ListItem("Room Number", classroomData.getRoomNum());
+                                    itemList.add(class_ListItem);
+                                    adapter.notifyDataSetChanged();
+                                }
                             }
                         }
 
-                        // If the room number is not in the list add it to the view
-                        if(!exists)
-                        {
-                            ListItem class_ListItem = new ListItem("Room Number", classroomData.getRoomNum());
-                            itemList.add(class_ListItem);
-                            adapter.notifyDataSetChanged();
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            String error = databaseError.getMessage();
+                            Log.v("Database", error);
                         }
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                    String error = databaseError.getMessage();
-                    Log.v("Database", error);
-                }
-            });
+                    });
 
             // Get the course info
             coursesRef.orderByChild("roomNum")
@@ -264,8 +246,7 @@ public final class DatabaseManager {
                             final ArrayList<String> facultyKeys = new ArrayList<String>();
 
                             // Get the keys for all teachers who teach in this classroom.
-                            for(DataSnapshot ds : dataSnapshot.getChildren())
-                            {
+                            for (DataSnapshot ds : dataSnapshot.getChildren()) {
                                 Course courseData = ds.getValue(Course.class);
 
                                 // Append the course to the course list
@@ -283,98 +264,87 @@ public final class DatabaseManager {
                                 facultyRef.orderByChild("id")
                                         .equalTo(facultyKeys.get(i))
                                         .addValueEventListener(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(DataSnapshot dataSnapshot) {
-                                            for(DataSnapshot ds : dataSnapshot.getChildren())
-                                            {
-                                                Faculty faculty = ds.getValue(Faculty.class);
+                                            @Override
+                                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                                                    Faculty faculty = ds.getValue(Faculty.class);
 
-                                                // Get full name
-                                                ArrayList<String> fullName = new ArrayList<String>();
-                                                fullName.add(faculty.getFirstName());
-                                                fullName.add(faculty.getLastName());
+                                                    // Get full name
+                                                    ArrayList<String> fullName = new ArrayList<String>();
+                                                    fullName.add(faculty.getFirstName());
+                                                    fullName.add(faculty.getLastName());
 
-                                                String instructor_FullName = TextUtils.join(" ", fullName);
-                                                instructorList.add(instructor_FullName);
+                                                    String instructor_FullName = TextUtils.join(" ", fullName);
+                                                    instructorList.add(instructor_FullName);
 
-                                                // Add email
-                                                emailList.add(faculty.getEmailAddress());
+                                                    // Add email
+                                                    emailList.add(faculty.getEmailAddress());
 
-                                                // Ensure we have all the emails. TODO: Possible bug here involving real-time data retrieval
-                                                if(emailList.size() == facultyKeys.size())
-                                                {
-                                                    // Add instructors
-                                                    String instructors = TextUtils.join("\n", instructorList);
-                                                    // Check if already in the list
-                                                    boolean instructorExists = false;
-                                                    for(ListItem item : itemList)
-                                                    {
-                                                        // If the instructor is already in the list just update it's value.
-                                                        if(item.getItemTitle().equals("Instructors"))
-                                                        {
-                                                            item.setItemBody(instructors);
-                                                            instructorExists = true;
+                                                    // Ensure we have all the emails. TODO: Possible bug here involving real-time data retrieval
+                                                    if (emailList.size() == facultyKeys.size()) {
+                                                        // Add instructors
+                                                        String instructors = TextUtils.join("\n", instructorList);
+                                                        // Check if already in the list
+                                                        boolean instructorExists = false;
+                                                        for (ListItem item : itemList) {
+                                                            // If the instructor is already in the list just update it's value.
+                                                            if (item.getItemTitle().equals("Instructors")) {
+                                                                item.setItemBody(instructors);
+                                                                instructorExists = true;
+                                                                adapter.notifyDataSetChanged();
+                                                            }
+                                                        }
+                                                        // If this is a new instructor add it to the view.
+                                                        if (!instructorExists) {
+                                                            ListItem instructor_ListItem = new ListItem("Instructors", instructors);
+                                                            itemList.add(instructor_ListItem);
                                                             adapter.notifyDataSetChanged();
                                                         }
-                                                    }
-                                                    // If this is a new instructor add it to the view.
-                                                    if(!instructorExists)
-                                                    {
-                                                        ListItem instructor_ListItem = new ListItem("Instructors", instructors);
-                                                        itemList.add(instructor_ListItem);
-                                                        adapter.notifyDataSetChanged();
-                                                    }
 
-                                                    // Add emails
-                                                    String emails = TextUtils.join("\n", emailList);
-                                                    // Check if already in the list
-                                                    boolean emailExists = false;
-                                                    for(ListItem item : itemList)
-                                                    {
-                                                        // If the email is already in the list update it's value.
-                                                        if(item.getItemTitle().equals("Instructor Emails"))
-                                                        {
-                                                            item.setItemBody(emails);
-                                                            emailExists = true;
+                                                        // Add emails
+                                                        String emails = TextUtils.join("\n", emailList);
+                                                        // Check if already in the list
+                                                        boolean emailExists = false;
+                                                        for (ListItem item : itemList) {
+                                                            // If the email is already in the list update it's value.
+                                                            if (item.getItemTitle().equals("Instructor Emails")) {
+                                                                item.setItemBody(emails);
+                                                                emailExists = true;
+                                                                adapter.notifyDataSetChanged();
+                                                            }
+                                                        }
+                                                        // If this is a new email add it to the view.
+                                                        if (!emailExists) {
+                                                            ListItem email_ListItem = new ListItem("Instructor Emails", emails);
+                                                            itemList.add(email_ListItem);
                                                             adapter.notifyDataSetChanged();
                                                         }
-                                                    }
-                                                    // If this is a new email add it to the view.
-                                                    if(!emailExists)
-                                                    {
-                                                        ListItem email_ListItem = new ListItem("Instructor Emails", emails);
-                                                        itemList.add(email_ListItem);
-                                                        adapter.notifyDataSetChanged();
                                                     }
                                                 }
                                             }
-                                        }
 
-                                        @Override
-                                        public void onCancelled(DatabaseError databaseError) {
-                                            String error = databaseError.getMessage();
-                                            Log.v("Database", error);
-                                        }
-                                    });
+                                            @Override
+                                            public void onCancelled(DatabaseError databaseError) {
+                                                String error = databaseError.getMessage();
+                                                Log.v("Database", error);
+                                            }
+                                        });
                             }
 
                             // Add courses
                             String courses = TextUtils.join(" ", courseList);
                             // Check if already in the list
                             boolean exists = false;
-                            for(ListItem item : itemList)
-                            {
+                            for (ListItem item : itemList) {
                                 // If the course is already in the view just update it.
-                                if(item.getItemTitle().equals("Courses"))
-                                {
+                                if (item.getItemTitle().equals("Courses")) {
                                     item.setItemBody(courses);
                                     exists = true;
                                     adapter.notifyDataSetChanged();
                                 }
                             }
                             // If this is a new course add it to the view.
-                            if(!exists)
-                            {
+                            if (!exists) {
                                 ListItem courses_ListItem = new ListItem("Courses", courses);
                                 itemList.add(courses_ListItem);
                                 adapter.notifyDataSetChanged();
@@ -388,5 +358,168 @@ public final class DatabaseManager {
                         }
                     });
         }
+
+        // Office
+        if(type.equals(Office_Type)) {
+            // Get the building info
+            buildingsRef.orderByChild("buildingNum")
+                    .equalTo(buildingNum)
+                    .addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+
+                            for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                                Building buildingData = ds.getValue(Building.class);
+
+                                // Check if already in the list
+                                boolean exists = false;
+                                for (ListItem item : itemList) {
+                                    // If the building name already exists update it's value.
+                                    if (item.getItemTitle().equals("Building Name")) {
+                                        item.setItemBody(buildingData.getName());
+                                        exists = true;
+                                        adapter.notifyDataSetChanged();
+                                    }
+                                }
+
+                                // If the building name does not exist add it to the view.
+                                if (!exists) {
+                                    ListItem building_ListItem = new ListItem("Building Name", buildingData.getName());
+                                    itemList.add(building_ListItem);
+                                    adapter.notifyDataSetChanged();
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            String error = databaseError.getMessage();
+                            Log.v("Database", error);
+                        }
+                    });
+
+            // Get the classroom
+            roomRef.orderByChild("roomNum")
+                    .equalTo(roomNum)
+                    .addValueEventListener(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            String facultyID = "None";
+
+                            for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                                Room roomData = ds.getValue(Room.class);
+                                facultyID = roomData.getFacultyID();
+
+                                // Check if already in the list
+                                boolean roomNum_Exists = false, roomType_Exists = false,
+                                        description_Exists = false;
+                                for (ListItem item : itemList) {
+                                    // Check if values are already in the view
+                                    if (item.getItemTitle().equals("Room Number")) {
+                                        item.setItemBody(roomData.getRoomNum());
+                                        roomNum_Exists = true;
+                                        adapter.notifyDataSetChanged();
+                                    }
+                                    if (item.getItemTitle().equals("Room Type")) {
+                                        item.setItemBody(roomData.getRoomType());
+                                        roomType_Exists = true;
+                                        adapter.notifyDataSetChanged();
+                                    }
+                                    if (item.getItemTitle().equals("Description")) {
+                                        item.setItemBody(roomData.getDescription());
+                                        description_Exists = true;
+                                        adapter.notifyDataSetChanged();
+                                    }
+                                }
+
+                                // If the room number is not in the list add it to the view
+                                if (!roomNum_Exists) {
+                                    ListItem class_ListItem = new ListItem("Room Number", roomData.getRoomNum());
+                                    itemList.add(class_ListItem);
+                                    adapter.notifyDataSetChanged();
+                                }
+                                if(!roomType_Exists) {
+                                    ListItem class_ListItem = new ListItem("Room Type", roomData.getRoomType());
+                                    itemList.add(class_ListItem);
+                                    adapter.notifyDataSetChanged();
+                                }
+                                if(!description_Exists) {
+                                    ListItem class_ListItem = new ListItem("Description", roomData.getDescription());
+                                    itemList.add(class_ListItem);
+                                    adapter.notifyDataSetChanged();
+                                }
+                            }
+
+                            // Get the faculty information
+                            facultyRef.orderByChild("id")
+                                    .equalTo(facultyID)
+                                    .addValueEventListener(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                                                Faculty faculty = ds.getValue(Faculty.class);
+
+                                                // Get full name
+                                                ArrayList<String> fullName = new ArrayList<String>();
+                                                fullName.add(faculty.getFirstName());
+                                                fullName.add(faculty.getLastName());
+
+                                                String instructor_FullName = TextUtils.join(" ", fullName);
+
+                                                boolean instructorExists = false;
+                                                for (ListItem item : itemList) {
+                                                    // If the instructor is already in the list just update it's value.
+                                                    if (item.getItemTitle().equals("Faculty")) {
+                                                        item.setItemBody(instructor_FullName);
+                                                        instructorExists = true;
+                                                        adapter.notifyDataSetChanged();
+                                                    }
+                                                }
+                                                // If this is a new instructor add it to the view.
+                                                if (!instructorExists) {
+                                                    ListItem instructor_ListItem = new ListItem("Faculty", instructor_FullName);
+                                                    itemList.add(instructor_ListItem);
+                                                    adapter.notifyDataSetChanged();
+                                                }
+
+                                                // Add emails
+                                                boolean emailExists = false;
+                                                for (ListItem item : itemList) {
+                                                    // If the email is already in the list update it's value.
+                                                    if (item.getItemTitle().equals("Email")) {
+                                                        item.setItemBody(faculty.getEmailAddress());
+                                                        emailExists = true;
+                                                        adapter.notifyDataSetChanged();
+                                                    }
+                                                }
+                                                // If this is a new email add it to the view.
+                                                if (!emailExists) {
+                                                    ListItem email_ListItem = new ListItem("Email", faculty.getEmailAddress());
+                                                    itemList.add(email_ListItem);
+                                                    adapter.notifyDataSetChanged();
+                                                }
+
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+                                            String error = databaseError.getMessage();
+                                            Log.v("Database", error);
+                                        }
+                                    });
+
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+                            String error = databaseError.getMessage();
+                            Log.v("Database", error);
+                        }
+                    });
+
+        }
+
+
     }
 }
