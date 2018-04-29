@@ -25,8 +25,12 @@
         <activity android:name=".ContentListActivity" />
         <activity
             android:name=".BldgMapActivity"
-            android:label="@string/title_activity_bldg_map"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".CreateQRActivity"
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>
