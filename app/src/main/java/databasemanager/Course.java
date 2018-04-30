@@ -17,11 +17,23 @@ public class Course {
 
     }
 
-    public Course(String crn, String buildingNum, String roomNum, String instructor, String subject, String courseNum, String name, String startingTime, String endingTime) {
+    /**
+     * Models information related to a course to be stored in the Firebase Realtime Database
+     * @param crn Course reference number
+     * @param buildingNum Building number
+     * @param roomNum Room number
+     * @param faculty ID of faculty member that instructs the course
+     * @param subject Subject
+     * @param courseNum Course number
+     * @param name Name
+     * @param startingTime 24-hour start time
+     * @param endingTime 24-hour end time
+     */
+    public Course(String crn, String buildingNum, String roomNum, String faculty, String subject, String courseNum, String name, String startingTime, String endingTime) {
         this.crn = crn;
         this.buildingNum = buildingNum;
         this.roomNum = roomNum;
-        this.instructor = instructor;
+        this.instructor = faculty;
         this.subject = subject;
         this.courseNum = courseNum;
         this.name = name;
@@ -58,6 +70,11 @@ public class Course {
         return instructor;
     }
 
+    /**
+     * Instructor should be a unique key ID that you plan to store the instructor under in the database.
+     * It is recommended that you use the Firebase API's getKey() functionality to generate this ID.
+     * @param instructor Unique ID of the instructor
+     */
     public void setInstructor(String instructor) {
         this.instructor = instructor;
     }
@@ -90,6 +107,10 @@ public class Course {
         return startingTime;
     }
 
+    /**
+     * Starting time must be in 24-hour notation.
+     * @param startingTime Starting time
+     */
     public void setStartingTime(String startingTime) {
         this.startingTime = startingTime;
     }
@@ -98,6 +119,10 @@ public class Course {
         return endingTime;
     }
 
+    /**
+     * Ending time must be in 24-hour notation.
+     * @param endingTime Ending time
+     */
     public void setEndingTime(String endingTime) {
         this.endingTime = endingTime;
     }

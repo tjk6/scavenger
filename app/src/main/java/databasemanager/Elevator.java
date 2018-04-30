@@ -14,6 +14,11 @@ public class Elevator {
 
     }
 
+    /**
+     * Models information related to an elevator to be stored in the Firebase Realtime Database
+     * @param buildingNum
+     * @param roomNum
+     */
     public Elevator(String buildingNum, String roomNum) {
         this.buildingNum = buildingNum;
         this.roomNum = roomNum;

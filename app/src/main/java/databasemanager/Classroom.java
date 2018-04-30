@@ -15,6 +15,12 @@ public class Classroom {
 
     }
 
+    /**
+     * Models information related to a classroom to be stored in the Firebase Realtime Database
+     * @param buildingNum Building number
+     * @param roomNum Room number
+     * @param floorNum Floor number
+     */
     public Classroom(String buildingNum, String roomNum, String floorNum) {
         this.buildingNum = buildingNum;
         this.roomNum = roomNum;

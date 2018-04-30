@@ -17,6 +17,9 @@ import java.util.List;
 
 import fourloops.scavenger.ListItem;
 
+/**
+ * This is a utility class for interaction with the Firebase Real-time Database
+ */
 public final class DatabaseManager {
     // Private Members
     // Refs
@@ -37,16 +40,28 @@ public final class DatabaseManager {
     private static final String Stairway_Type = "04";
     private static final String Elevator_Type = "05";
 
-    // Private constructor for non-instantiability
+    /**
+     * Private constructor for non-instantiability
+     */
     private DatabaseManager() {
         throw new AssertionError();
     }
 
+    /**
+     * Inserts a building object into the database
+     * @param _building Building to be added to the database
+     */
     public static void insertBuilding(Building _building) {
         String key = buildingsRef.push().getKey();
         buildingsRef.child(key).setValue(_building);
     }
 
+    /**
+     * Creates a building object and inserts it into the database.
+     * @param _name Name of the building
+     * @param _buildingNum Building number
+     * @return The unique key the building is stored under
+     */
     public static String insertBuilding(String _name, String _buildingNum) {
         Building newBuilding = new Building(_name, _buildingNum);
         String key = buildingsRef.push().getKey();
@@ -55,11 +70,28 @@ public final class DatabaseManager {
         return key;
     }
 
+    /**
+     * Inserts a course object into the database.
+     * @param _course Course to be added to the database
+     */
     public static void insertCourse(Course _course) {
         String key = coursesRef.push().getKey();
         coursesRef.child(key).setValue(_course);
     }
 
+    /**
+     * Creates and inserts a course object into the database.
+     * @param _crn Course reference number
+     * @param _buildingNum Building number
+     * @param _roomNum Room Number
+     * @param _instructor ID of the instructor of the course
+     * @param _subject Course subject
+     * @param _courseNum Course number
+     * @param _name Name of the course
+     * @param _startingTime 24-hour start time of the course
+     * @param _endingTime 24-hour end time of the course
+     * @return The unique key the course is stored under.
+     */
     public static String insertCourse(String _crn, String _buildingNum, String _roomNum, String _instructor, String _subject, String _courseNum, String _name, String _startingTime, String _endingTime) {
         Course newCourse = new Course(_crn, _buildingNum, _roomNum, _instructor, _subject, _courseNum, _name, _startingTime, _endingTime);
         String key = coursesRef.push().getKey();
@@ -68,11 +100,22 @@ public final class DatabaseManager {
         return key;
     }
 
+    /**
+     * Inserts a faculty object into the database.
+     * @param _faculty Faculty member to be added to the database
+     */
     public static void insertFaculty(Faculty _faculty) {
         String key = facultyRef.push().getKey();
         facultyRef.child(key).setValue(_faculty);
     }
 
+    /**
+     * Creates and inserts a faculty object into the database
+     * @param _firstName First name
+     * @param _lastName Last name
+     * @param _emailAddress Email address
+     * @return The unique key the faculty member is stored under
+     */
     public static String insertFaculty(String _firstName, String _lastName, String _emailAddress) {
         String key = facultyRef.push().getKey();
         Faculty newFaculty = new Faculty(key, _firstName, _lastName, _emailAddress);
@@ -81,11 +124,25 @@ public final class DatabaseManager {
         return key;
     }
 
+    /**
+     * Inserts a room object into the database
+     * @param _room Room to be added to the database
+     */
     public static void insertRoom(Room _room) {
         String key = roomRef.push().getKey();
         roomRef.child(key).setValue(_room);
     }
 
+    /**
+     * Creates and inserts a room object into the database
+     * @param _buildingNum Building number
+     * @param _roomNum Room number
+     * @param _floorNum Floor number
+     * @param _roomType Room type
+     * @param _description Description about the room
+     * @param _facultyID ID of faculty member who owns this room. (Only necessary if the room is of Office type)
+     * @return The unique key the room is stored under
+     */
     public static String insertRoom(String _buildingNum, String _roomNum, String _floorNum, String _roomType, String _description, String _facultyID) {
         Room newRoom = new Room(_buildingNum, _roomNum, _floorNum, _roomType, _description, _facultyID);
         String key = roomRef.push().getKey();
@@ -94,11 +151,22 @@ public final class DatabaseManager {
         return key;
     }
 
+    /**
+     * Inserts a classroom object into the database
+     * @param _classroom Classroom to be added to the database
+     */
     public static void insertClassroom(Classroom _classroom) {
         String key = classroomsRef.push().getKey();
         classroomsRef.child(key).setValue(_classroom);
     }
 
+    /**
+     * Creates and inserts a classroom object into the database
+     * @param _buildingNum Building number
+     * @param _roomNum Room number
+     * @param _floorNum Floor number
+     * @return The unique key the classroom is stored under
+     */
     public static String insertClassroom(String _buildingNum, String _roomNum, String _floorNum) {
         Classroom newClasroom = new Classroom(_buildingNum, _roomNum, _floorNum);
         String key = classroomsRef.push().getKey();
@@ -107,24 +175,48 @@ public final class DatabaseManager {
         return key;
     }
 
+    /**
+     * Inserts an office object into the database
+     * @param _office Office to be added to the database
+     */
     public static void insertOffice(Office _office) {
         String key = officesRef.push().getKey();
         officesRef.child(key).setValue(_office);
     }
 
-    public static String insertOffice(String _buildingNum, String _roomNum, String _floorNum, String _instructor, HashMap<String, String> _hours) {
-        Office newOffice = new Office(_buildingNum, _roomNum, _floorNum, _instructor, _hours);
+    /**
+     * Creates and inserts an office into the database
+     * @param _buildingNum Building number
+     * @param _roomNum Room number
+     * @param _floorNum Floor number
+     * @param _faculty ID of the faculty member in the office
+     * @param _hours Hashmap containing a key-value pair of the office hours(24hr notation) of the faculty member.
+     *               Example: (1200, 1500)
+     * @return The unique key the office is stored under
+     */
+    public static String insertOffice(String _buildingNum, String _roomNum, String _floorNum, String _faculty, HashMap<String, String> _hours) {
+        Office newOffice = new Office(_buildingNum, _roomNum, _floorNum, _faculty, _hours);
         String key = officesRef.push().getKey();
         officesRef.child(key).setValue(newOffice);
 
         return key;
     }
 
+    /**
+     * Insert an elevator object into the database
+     * @param _elevator Elevator to be added to the database
+     */
     public static void insertElevator(Elevator _elevator) {
         String key = elevatorsRef.push().getKey();
         elevatorsRef.child(key).setValue(_elevator);
     }
 
+    /**
+     * Creates an inserts an elevator object into the database
+     * @param _buildingNum Building number
+     * @param _roomNum Room number
+     * @return The unique key the elevator is stored under
+     */
     public static String insertElevator(String _buildingNum, String _roomNum) {
         Elevator newElevator = new Elevator(_buildingNum, _roomNum);
         String key = elevatorsRef.push().getKey();
@@ -133,11 +225,22 @@ public final class DatabaseManager {
         return key;
     }
 
+    /**
+     * Inserts a stairway object into the database.
+     * @param _stairway Stairway to be inserted into the database
+     */
     public static void insertStairway(Stairway _stairway) {
         String key = stairwaysRef.push().getKey();
         stairwaysRef.child(key).setValue(_stairway);
     }
 
+    /**
+     * Creates and inserts a stairway object into the database
+     * @param _buildingNum Building number
+     * @param _roomNum Room number
+     * @param _floorNum Floor number
+     * @return The unique key the stairway is stored under
+     */
     public static String insertStairway(String _buildingNum, String _roomNum, String _floorNum) {
         Stairway newStairway = new Stairway(_buildingNum, _roomNum, _floorNum);
         String key = stairwaysRef.push().getKey();
@@ -146,6 +249,14 @@ public final class DatabaseManager {
         return key;
     }
 
+    /**
+     * Given a key-identifier, this function parses the key and returns all information stored in the database
+     * that is related to that key by adding the data to a passed in RecyclerView adapter
+     * @param key A key formatted in TYPE:BUILDING_NUM:FLOOR_NUM:ROOM_NUM notation
+     *            Example: 01:00004:003:00305
+     * @param itemList Array list of ListItems that will be added to a view
+     * @param adapter Adapter for the recycler view
+     */
     public static void getInfo(String key, final ArrayList<ListItem> itemList, final RecyclerView.Adapter adapter) {
         // Example key: 01:00004:003:00305
         List<String> keyList = Arrays.asList(key.split(":"));

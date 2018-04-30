@@ -14,6 +14,14 @@ public class Room {
 
     }
 
+    /**
+     * Models information related to a room to be stored in the Firebase Realtime Database
+     * @param buildingNum Building number
+     * @param roomNum Room number
+     * @param floorNum Floor number
+     * @param roomType The type of room this is(Office, Classroom, Restroom, etc.)
+     * @param description Description
+     */
     public Room(String buildingNum, String roomNum, String floorNum, String roomType, String description) {
         this.buildingNum = buildingNum;
         this.roomNum = roomNum;
@@ -23,6 +31,15 @@ public class Room {
         this.facultyID = "No Faculty Member";
     }
 
+    /**
+     * Models information related to a room to be stored in the Firebase Realtime Database
+     * @param buildingNum Building number
+     * @param roomNum Room number
+     * @param floorNum Floor number
+     * @param roomType The type of room this is (Office, Classroom, Restroom, etc.)
+     * @param description Description
+     * @param facultyID ID of the faculty member in this room
+     */
     public Room(String buildingNum, String roomNum, String floorNum, String roomType, String description, String facultyID) {
         this.buildingNum = buildingNum;
         this.roomNum = roomNum;
@@ -77,6 +94,10 @@ public class Room {
         return facultyID;
     }
 
+    /**
+     * Faculty ID must be the unique ID that a faculty member is stored under in the database
+     * @param facultyID Faculty member ID
+     */
     public void setFacultyID(String facultyID) {
         this.facultyID = facultyID;
     }

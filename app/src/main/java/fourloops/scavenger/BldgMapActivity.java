@@ -30,10 +30,6 @@ public class BldgMapActivity extends AppCompatActivity {
         qrCreatorButton = findViewById(R.id.create_new_qr);
         NewQRTouchListener newQRTouchListener = new NewQRTouchListener();
         qrCreatorButton.setOnTouchListener(newQRTouchListener);
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
-
-
     }
 
     private void launchQRScanner(){
